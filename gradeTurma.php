@@ -230,10 +230,7 @@ include("topo.php");
                     </div>
                     <?php } ?>
 
-
-
                 </div>
-                    
 
                 <div class="ui dragdrop-field">
 
