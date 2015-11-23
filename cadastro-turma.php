@@ -15,7 +15,7 @@ include("topo.php");
             Cadastro de nova turma
         </div>
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-        <div class="ten wide column">
+
             <div class="ui one column center aligned stackable grid">
 
                 <div class="cadastroDisciplina column">
@@ -45,23 +45,21 @@ include("topo.php");
 
                         </div>
 
-
-
-                    </div>
-                    <br>
-
-
-                    <div class="cadastroDisciplina column">
-                        <p class="cadastroLabel">Numero de alunos</p>
+                        <div class="cadastroDisciplina column">
+                            <p class="cadastroLabel">Status desta turma</p>
 
                             <div style="text-align: left">
-                                <input type="number" autocomplete="off" data-mask = "0000" class="inputDisciplina" name="numAluno">
+                                <select class="ui dropdown" required="" name="status" style="width: 100%	">
+
+                                    <option value="1">Ativo</option>
+                                    <option value="0">Inativo</option>
+
+                                </select>
                             </div>
 
-                        <br><br>
+                        </div>
 
                     </div>
-
 
                 </div>
             </div>
@@ -69,7 +67,7 @@ include("topo.php");
             <br>
             <input type="submit" name="turma" class="ui green right labeled icon button" value="Cadastrar">
 
-        </div>
+
         </form>
     </div>
     </div>
@@ -81,9 +79,10 @@ if(isset($_POST['turma']))
 {
     $nome = $_POST['nome'];
     $idCurso = $_POST['curso'];
-    $numAlunos = $_POST['numAluno'];
+    $status = $_POST['status'];
 
-    addTurma($nome, $idCurso, $numAlunos);
+
+    addTurma($nome, $idCurso, $status);
 }
     ?>
 

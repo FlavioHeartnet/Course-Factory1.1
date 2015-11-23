@@ -205,7 +205,7 @@ include("topo.php");
                                     while($rsResult = $result->fetch_array())
                                     {
                                         ?>
-                                        <option value="<?php echo $rsResult['idDiciplina'] ?>"><?php echo utf8_decode($rsResult['Nome']) ?></option>
+                                        <option value="<?php echo $rsResult['idDiciplina'] ?>"><?php echo utf8_encode($rsResult['Nome']) ?></option>
                                         <?php
                                     }
                                     ?>

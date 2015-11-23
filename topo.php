@@ -92,6 +92,7 @@ $idUsuario = $rsQuery['idUsuario'];
                         <a class="item" href="consultarTurma.php">Disciplinas da Turma</a>
                         <a class="item" href="cadastro-turma.php">Cadastro de Turmas</a>
                         <a class="item" href="cadastro-letivo.php">Cadastro de Periodo Letivo</a>
+                        <a class="item" href="consultar-periodo.php">Consultar Periodo Letivo</a>
 
                     </div>
                 </div>

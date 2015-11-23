@@ -184,7 +184,7 @@ include("topo.php");
                                 $arrayTurma = array();
                                 $arrayTurma = $idTurma;
                                 ?>
-                                <input type="hidden" name="idTurma[]" value="<?php echo $idTurma; ?>">
+
                                 <?php
 
                                 $conect = "select * from alunos_disciplinas a inner join diciplinas d on d.idDiciplina = a.idDiciplina where a.PeriodoLetivo = '$modulo' and a.idTurma = '$idTurma'";
@@ -192,6 +192,8 @@ include("topo.php");
                                 if($query->num_rows != 0 ){
                                     while($rsDisc = $query1->fetch_array())
                                     {
+
+
 
                                         $letivo = $rsDisc['PeriodoLetivo'];
                                         $sql = "select * from periodoletivo where idLetivo= '$letivo'";
@@ -203,6 +205,7 @@ include("topo.php");
                                         $historico = $query2->fetch_array();
 
                                         ?>
+                                        <input type="hidden" name="idTurma[]" value="<?php echo $idTurma; ?>">
                                         <li class="element draggable" style="display:flex">
                                             <div class="ui cards ">
                                                 <div class="ui red card">
@@ -250,6 +253,46 @@ include("topo.php");
 
 $sql = "select * from cursos";
 $query = $con->query($sql);
+
+if(isset($_POST['salvar']))
+{
+
+    $idAD = $_POST['idAD'];
+    $idDiciplina = $_POST['idDiciplina'];
+    $idTurma = $_POST['idTurma'];
+    $count = count($idAD);
+
+
+    ?>
+<div class="ui centered page grid">
+    <div class="row">
+    <table class="ui red table" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+        <td>id</td>
+        <td>disciplina</td>
+        <td>Turma</td>
+    </tr>
+
+    <?php
+    for($i=0;$i< $count; $i++)
+    {
+
+        ?>
+            <tr>
+                <td><?php echo $idAD[$i]; ?></td>
+                <td><?php echo $idDiciplina[$i]; ?></td>
+                <td><?php echo $idTurma[$i]; ?></td>
+            </tr>
+        <?php
+    }
+
+        ?>
+    </table>
+    </div>
+    </div>
+        <?php
+
+}
 
 
 ?>

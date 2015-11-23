@@ -8,7 +8,7 @@ $sql = $GLOBALS['con']->query("SELECT * FROM turma WHERE idTurma =  '$id'");
 while($rsSql = $sql->fetch_array())
 {
     $idCurso = $rsSql['idCurso'];
-    $periodoLetivo = $rsSql['PeriodoLetivo'];
+
 
     $curso = $GLOBALS['con']->query("SELECT * FROM cursos WHERE idCurso =  '$idCurso'");
     $cursos = $curso->fetch_array();
@@ -23,7 +23,7 @@ while($rsSql = $sql->fetch_array())
                 <div class="meta">Curso: <?php echo utf8_encode($cursos['Nome']); ?></div>
                 <div class="description">
 
-                    Numeros de Alunos: <?php echo utf8_encode($rsSql['numAlunos']) ?><br>
+
 
                     <!--Colocar aqui o que for preenchido em "descrição" na página do casdastro-->
                 </div>

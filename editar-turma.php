@@ -6,10 +6,10 @@ if(isset($_POST['gravar']))
 {
     $nome = $_POST['nome'];
     $idCurso = $_POST['curso'];
-    $numAlunos = $_POST['numAluno'];
     $idTurma = $_POST['idTurma'];
+    $status = $_POST['status'];
 
-    editarTurma($nome, $idCurso, $idTurma, $numAlunos);
+    editarTurma($nome, $idCurso, $idTurma, $status);
 
 }elseif(isset($_POST['deletar']))
 {
@@ -46,7 +46,7 @@ while($buscaTurma = $query->fetch_array()){
 <div class="ui vertical feature segment">
     <div class="ui centered page grid">
         <div class="titlePage">
-            Cadastro de nova turma
+            Editar turmas
         </div>
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
             <div class="fourteen wide column">
@@ -87,24 +87,50 @@ while($buscaTurma = $query->fetch_array()){
                                 </label>
                             </div>
 
-
-
-
                         </div>
+
                         <br>
 
+                        <div class="cadastroDisciplina column">
+                            <p class="cadastroLabel">Status desta turma</p>
 
-                    </div>
-                    <div class="cadastroDisciplina column">
-                        <p class="cadastroLabel">Numero de alunos</p>
+                            <div style="text-align: left">
+                                <label for="status">
+                                    <select id="status" class="ui dropdown" required="" name="status" style="width: 100%	">
 
-                        <div style="text-align: left">
-                            <input type="number" autocomplete="off" value="<?php echo $buscaTurma['numAlunos'];  ?>" data-mask = "0000" class="inputDisciplina" name="numAluno">
+                                        <?php
+
+                                        $query = $con->query("select * from turma where idTurma = '$idTurma'");
+                                        $turmas= $query->fetch_array();
+
+                                        $status = $turmas['status'];
+
+
+                                        switch($status){
+
+                                            case 1: $texto = 'Ativo';
+                                                break;
+                                            case 0: $texto = 'Inativo';
+                                                break;
+                                            default: $texto = 'Valor incorreto';
+                                                break;
+
+                                        }
+                                        ?>
+                                        <option value="<?php echo $turmas['status']?>"><?php echo $texto ?></option>
+
+                                        <option value="1">Ativo</option>
+                                        <option value="0">Inativo</option>
+
+                                    </select>
+                                </label>
+                            </div>
+
                         </div>
 
-                        <br><br>
 
                     </div>
+
                 </div>
 
                 <br>

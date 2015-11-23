@@ -364,10 +364,10 @@ function deletaAluno($idAluno)
 
 }
 
-function addTurma($nome, $idCurso, $numAlunos)
+function addTurma($nome, $idCurso, $status)
 {
 
-    $sql = "INSERT INTO turma( Nome, idCurso,numAlunos) VALUES ('$nome','$idCurso','$numAlunos')";
+    $sql = "INSERT INTO turma( Nome, idCurso, status) VALUES ('$nome','$idCurso', '$status')";
 
     $query = $GLOBALS['con']->query($sql);
 
@@ -383,10 +383,10 @@ function addTurma($nome, $idCurso, $numAlunos)
 
 }
 
-function editarTurma($nome, $idCurso, $idTurma, $numAlunos)
+function editarTurma($nome, $idCurso, $idTurma, $status)
 {
 
-    $sql = "UPDATE `turma` SET Nome='$nome',idCurso='$idCurso', numAlunos='$numAlunos' WHERE idTurma = '$idTurma'";
+    $sql = "UPDATE `turma` SET Nome='$nome',idCurso='$idCurso', status='$status' WHERE idTurma = '$idTurma'";
 
     $query = $GLOBALS['con']->query($sql);
 
@@ -423,15 +423,15 @@ function deletarTurma($idTurma)
 
 }
 
-function addLetivo($nome, $inicio, $termino, $proximo)
+function addLetivo($nome, $inicio, $termino, $anterior)
 {
 
-    $busca = $GLOBALS['con']->query("select * from periodoletivo where LetivoProximo = '$proximo'");
+    $busca = $GLOBALS['con']->query("select * from periodoletivo where LetivoProximo = '$anterior'");
 
     if($busca->num_rows == 0)
     {
 
-        $sql = $GLOBALS['con']->query("INSERT INTO periodoletivo(Nome, inicio, termino, LetivoProximo) VALUES ('$nome','$inicio','$termino','$proximo')");
+        $sql = $GLOBALS['con']->query("INSERT INTO periodoletivo(Nome, inicio, termino, LetivoProximo) VALUES ('$nome','$inicio','$termino','$anterior')");
 
         if ($sql == true) {
             echo "<script>alert('Cadastro feito com sucesso'); location.href='cadastro-letivo.php';</script>";
@@ -450,7 +450,7 @@ function editaLetivo($idLetivo, $nome, $inicio, $termino, $proximo)
 
     if($sql == true)
     {
-        echo "<script>alert('Atualizado com sucesso'); location.href='cadastro-letivo.php';</script>";
+        echo "<script>alert('Atualizado com sucesso'); location.href='consultar-periodo.php';</script>";
         return true;
     }else
     {
@@ -462,12 +462,52 @@ function editaLetivo($idLetivo, $nome, $inicio, $termino, $proximo)
 
 }
 
+function deletarLetivo($idLetivo)
+{
+
+    $buscas = "select * from periodoletivo where LetivoProximo = '$idLetivo'";
+    $query = $GLOBALS['con']->query($buscas);
+
+    if ($query->num_rows > 0) {
+
+        while($buscas = $query->fetch_array()){
+
+            $id = $buscas['idLetivo'];
+
+            $sql = "update periodoletivo set LetivoProximo = '0' where idLetivo = '$id'";
+            $query2 = $GLOBALS['con']->query($sql);
+
+
+        }
+
+    }
+
+        $sql = "DELETE FROM `periodoletivo` WHERE idLetivo = '$idLetivo'";
+
+        $query = $GLOBALS['con']->query($sql);
+
+        if ($query == true) {
+            echo "<script>alert('Periodo deletado com sucesso'); location.href='consultar-periodo.php';</script>";
+            return true;
+        } else {
+            echo "<script>alert('Ocorreu um erro ao deletar o Periodo!'); history.back(-1);</script>";
+            return true;
+        }
+
+
+
+
+}
+
 
 function alunosDisc($idTurma, $idDiciplina, $carga, $requisito,$situacao, $conclusao, $semestre, $id)
 {
     $count = count($id);
     $sql = "SELECT * FROM alunos_disciplinas where idTurma = '$idTurma'";
     $query2 = $GLOBALS['con']->query($sql);
+
+
+
     if($query2->num_rows<=0)
     {
         for($i = 0 ; $i < $count; $i++) {

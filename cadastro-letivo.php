@@ -68,8 +68,8 @@ if(isset($_POST['gravar']))
     $nome = $_POST['nome'];
     $inicio = $_POST['inicio'];
     $termino = $_POST['fim'];
-    $proximo = $_POST['modulo'];
-    addLetivo($nome, $inicio, $termino, $proximo);
+    $anterior = $_POST['modulo'];
+    addLetivo($nome, $inicio, $termino, $anterior);
 
 
 }
