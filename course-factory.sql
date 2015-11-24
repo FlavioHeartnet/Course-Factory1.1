@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 22-Out-2015 às 20:52
+-- Generation Time: 24-Nov-2015 às 21:39
 -- Versão do servidor: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `course-factory`
 --
-CREATE DATABASE IF NOT EXISTS `course-factory` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+CREATE DATABASE IF NOT EXISTS `course-factory` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 USE `course-factory`;
 
 -- --------------------------------------------------------
@@ -67,13 +67,13 @@ CREATE TABLE IF NOT EXISTS `alunos_disciplinas` (
   `idAD` int(11) NOT NULL AUTO_INCREMENT,
   `idDiciplina` int(11) DEFAULT NULL,
   `idTurma` int(11) DEFAULT NULL,
-  `cargaHoraria` varchar(255) DEFAULT NULL,
+  `cargaHoraria` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `prerequisito` int(11) DEFAULT NULL,
   `situacao` int(255) DEFAULT NULL,
   `PeriodoLetivo` int(11) DEFAULT NULL,
   `semestre` int(11) DEFAULT NULL,
   PRIMARY KEY (`idAD`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=115 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=120 ;
 
 --
 -- Extraindo dados da tabela `alunos_disciplinas`
@@ -127,7 +127,12 @@ INSERT INTO `alunos_disciplinas` (`idAD`, `idDiciplina`, `idTurma`, `cargaHorari
 (111, 20, 5, '40 horas', 17, 1, 5, 3),
 (112, 23, 5, '40 horas', 0, 1, 5, 3),
 (113, 19, 5, '40 horas', 0, 1, 6, 4),
-(114, 24, 5, '40 horas', 15, 1, 6, 4);
+(114, 24, 5, '40 horas', 15, 1, 6, 4),
+(115, 26, 4, '40 horas', 0, 1, 5, 3),
+(116, 5, 2, '40 horas', 0, 1, 3, 1),
+(117, 10, 2, '40 horas', 0, 1, 4, 1),
+(118, 17, 2, '40 horas', 0, 1, 3, 1),
+(119, 16, 2, '40 horas', 0, 1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -138,13 +143,13 @@ INSERT INTO `alunos_disciplinas` (`idAD`, `idDiciplina`, `idTurma`, `cargaHorari
 DROP TABLE IF EXISTS `cursos`;
 CREATE TABLE IF NOT EXISTS `cursos` (
   `idCurso` int(11) NOT NULL AUTO_INCREMENT,
-  `Nome` varchar(255) DEFAULT NULL,
+  `Nome` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `codMac` int(11) DEFAULT NULL,
-  `dataAutoMac` text,
-  `Cordenador` varchar(255) DEFAULT NULL,
-  `Modulo` text,
+  `dataAutoMac` text COLLATE utf8_unicode_ci,
+  `Cordenador` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Modulo` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`idCurso`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 --
 -- Extraindo dados da tabela `cursos`
@@ -164,14 +169,14 @@ DROP TABLE IF EXISTS `diciplinas`;
 CREATE TABLE IF NOT EXISTS `diciplinas` (
   `idDiciplina` int(11) NOT NULL AUTO_INCREMENT,
   `Nome` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `sigla` varchar(255) DEFAULT NULL,
-  `cargaHoraria` varchar(255) DEFAULT NULL,
-  `descricao` varchar(256) DEFAULT NULL,
+  `sigla` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cargaHoraria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `descricao` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
   `tipo` int(11) DEFAULT NULL,
   PRIMARY KEY (`idDiciplina`),
   UNIQUE KEY `idDiciplina` (`idDiciplina`),
   KEY `idDiciplina_2` (`idDiciplina`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
 
 --
 -- Extraindo dados da tabela `diciplinas`
@@ -179,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `diciplinas` (
 
 INSERT INTO `diciplinas` (`idDiciplina`, `Nome`, `sigla`, `cargaHoraria`, `descricao`, `tipo`) VALUES
 (5, 'Pesquisa e Ordenação', 'POD', '40 horas', 'lorem ipsum2', 1),
-(10, 'Redes', 'RDE', '40 horas', 'Disciplina onde o tema proposto s?o redes de computador', 2),
+(10, 'Redes', 'RDE', '40 horas', 'Disciplina onde o tema proposto são redes de computador', 2),
 (15, 'Gestão de Projetos', 'GPS', '40 horas', 'nova descricao', 1),
 (16, 'Empreendedorismo', 'EMP', '40 horas', 'lorem ipsum', 0),
 (17, 'Banco de Dados 1', 'BD1', '40 horas', 'Coisas de banco dedados', 1),
@@ -190,7 +195,8 @@ INSERT INTO `diciplinas` (`idDiciplina`, `Nome`, `sigla`, `cargaHoraria`, `descr
 (22, 'Matemática  avançada', 'MAT', '40 horas', 'lorem ipsum', 2),
 (23, 'Comunicação e Expressão', 'CME', '40 horas', 'lorem ipsum', 1),
 (24, 'Direito da Informatica', 'DI', '40 horas', 'Sobre direito digital', 2),
-(25, 'Algoritmos 2', 'ALG2', '40 horas', 'lorem ipsum', 1);
+(25, 'Algoritmos 2', 'ALG2', '40 horas', 'lorem ipsum', 1),
+(26, 'Geometria analitica', 'GEO', '40 horas', 'lorem ipsum2', 2);
 
 -- --------------------------------------------------------
 
@@ -222,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `historicoletivo` (
   `semestre` int(11) DEFAULT NULL,
   `numAlunos` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=29 ;
 
 --
 -- Extraindo dados da tabela `historicoletivo`
@@ -264,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `modulo` (
   `idDiciplina` int(11) DEFAULT NULL,
   `prerequisito` int(11) DEFAULT NULL,
   PRIMARY KEY (`idModulo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
 
 --
 -- Extraindo dados da tabela `modulo`
@@ -282,7 +288,8 @@ INSERT INTO `modulo` (`idModulo`, `idCurso`, `semestre`, `idDiciplina`, `prerequ
 (9, 1, 3, 20, 17),
 (10, 1, 3, 23, 0),
 (19, 1, 4, 19, 0),
-(20, 1, 4, 24, 15);
+(20, 1, 4, 24, 15),
+(21, 1, 1, 26, 0);
 
 -- --------------------------------------------------------
 
@@ -293,23 +300,24 @@ INSERT INTO `modulo` (`idModulo`, `idCurso`, `semestre`, `idDiciplina`, `prerequ
 DROP TABLE IF EXISTS `periodoletivo`;
 CREATE TABLE IF NOT EXISTS `periodoletivo` (
   `idLetivo` int(11) NOT NULL AUTO_INCREMENT,
-  `Nome` varchar(255) DEFAULT NULL,
+  `Nome` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `inicio` date DEFAULT NULL,
   `termino` date DEFAULT NULL,
   `LetivoProximo` int(11) DEFAULT NULL,
   PRIMARY KEY (`idLetivo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;
 
 --
 -- Extraindo dados da tabela `periodoletivo`
 --
 
 INSERT INTO `periodoletivo` (`idLetivo`, `Nome`, `inicio`, `termino`, `LetivoProximo`) VALUES
-(3, '2015Sem1', '2015-12-01', '2015-06-15', 4),
-(4, '2015Sem2', '2015-08-01', '2015-12-23', 5),
-(5, '2016Sem1', '2016-02-02', '2016-06-12', 6),
-(6, '2016Sem2', '2016-08-12', '2016-12-12', NULL),
-(7, '2017sem1', '2017-02-12', '2017-06-12', 0);
+(3, '2015Sem1', '2015-12-01', '2015-06-15', 3),
+(4, '2015Sem2', '2015-08-01', '2015-12-23', 3),
+(5, '2016Sem1', '2016-02-02', '2016-06-12', 4),
+(6, '2016Sem2', '2016-08-12', '2016-12-12', 5),
+(7, '2017sem1', '2017-02-12', '2017-06-12', 6),
+(9, '2018sem1', '2018-02-02', '2018-06-02', 0);
 
 -- --------------------------------------------------------
 
@@ -320,25 +328,26 @@ INSERT INTO `periodoletivo` (`idLetivo`, `Nome`, `inicio`, `termino`, `LetivoPro
 DROP TABLE IF EXISTS `turma`;
 CREATE TABLE IF NOT EXISTS `turma` (
   `idTurma` int(11) NOT NULL AUTO_INCREMENT,
-  `Nome` varchar(255) DEFAULT NULL,
+  `Nome` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `idCurso` int(11) DEFAULT NULL,
-  `PeriodoLetivo` int(11) DEFAULT NULL,
-  `numAlunos` int(11) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
   PRIMARY KEY (`idTurma`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
 
 --
 -- Extraindo dados da tabela `turma`
 --
 
-INSERT INTO `turma` (`idTurma`, `Nome`, `idCurso`, `PeriodoLetivo`, `numAlunos`) VALUES
-(2, '1CCO', 1, 1, NULL),
-(3, '2ADM', 2, 1, NULL),
-(4, '2CCO', 1, 2, 40),
-(5, '3CCO', 1, 2, NULL),
-(6, 'turma3', 1, 3, 23),
-(7, 'turma4', 1, 3, 23),
-(8, 'Turma5', 2, NULL, 45);
+INSERT INTO `turma` (`idTurma`, `Nome`, `idCurso`, `status`) VALUES
+(2, '1CCO', 1, 1),
+(3, '2ADM', 2, 0),
+(4, '2CCO', 1, 1),
+(5, '3CCO', 1, 1),
+(6, 'turma3', 1, 1),
+(7, 'turma4', 1, 1),
+(8, 'Turma5', 2, 0),
+(9, 'ADM132', 2, 0),
+(10, 'turma7', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -349,14 +358,14 @@ INSERT INTO `turma` (`idTurma`, `Nome`, `idCurso`, `PeriodoLetivo`, `numAlunos`)
 DROP TABLE IF EXISTS `usuariosfactory`;
 CREATE TABLE IF NOT EXISTS `usuariosfactory` (
   `idUsuario` int(11) NOT NULL AUTO_INCREMENT,
-  `nome` text,
-  `usuario` text,
-  `senha` varchar(255) DEFAULT NULL,
+  `nome` text CHARACTER SET latin1,
+  `usuario` text CHARACTER SET latin1,
+  `senha` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
-  `email` text,
+  `email` text CHARACTER SET latin1,
   `nivel` int(11) DEFAULT NULL,
   PRIMARY KEY (`idUsuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
 --
 -- Extraindo dados da tabela `usuariosfactory`
