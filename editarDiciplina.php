@@ -17,10 +17,10 @@ if(isset($_POST['id'])) {
     $nome = $_POST['nome'];
     $horas = $_POST['horas'];
     $sigla = $_POST['sigla'];
-    $descricao = $_POST['descricao'];
+    $descricao = utf8_encode($_POST['descricao']);
     $id = $_POST['id'];
     $tipo = $_POST['tipo'];
-}
+
     ?>
 
 
@@ -56,8 +56,8 @@ if(isset($_POST['id'])) {
                     <div class="cadastroDisciplina column ">
 
                         <p class="cadastroLabel">Descrição</p>
-                        <input class="inputDisciplina" value="<?php echo $descricao ?>" type="text" name="desc"
-                               placeholder="Descricao">
+                        <input class="inputDisciplina" value="<?php echo utf8_encode($descricao) ?>" type="text" name="desc"
+                               placeholder="Descrição">
                         <br><br>
 
                         <br>
@@ -85,6 +85,11 @@ if(isset($_POST['id'])) {
 
                         <br>
 
+
+
+                    </div>
+                    <div class="cadastroDisciplina column ">
+
                         <input type="submit" name="gravar" class="ui green right labeled icon button" value="Atualizar">
 
                         <i class="right chevron icon"></i>
@@ -103,6 +108,14 @@ if(isset($_POST['id'])) {
 
 
 <?php
+
+}else{
+
+    echo "<script>alert('Você acessou esta pagina de forma incorreta'); history.back(-1);</script>";
+    return false;
+
+}
+
 if(isset($_POST['gravar']))
 {
     $nomeDiciplina = $_POST['nome'];

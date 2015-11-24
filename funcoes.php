@@ -30,6 +30,7 @@ function editarDiciplina($idDiciplina,$nomeDiciplina, $sigla, $cargaHora, $descr
 {
 
 
+
     $sql = "UPDATE diciplinas SET Nome='$nomeDiciplina',sigla='$sigla',cargaHoraria='$cargaHora', descricao = '$descricao', tipo = '$tipo' WHERE idDiciplina = '$idDiciplina'";
     $query = $GLOBALS['con']->query($sql);
 
@@ -506,7 +507,14 @@ function alunosDisc($idTurma, $idDiciplina, $carga, $requisito,$situacao, $concl
     $sql = "SELECT * FROM alunos_disciplinas where idTurma = '$idTurma'";
     $query2 = $GLOBALS['con']->query($sql);
 
+    $arraydisc = array_unique($idDiciplina);
 
+    if(count($arraydisc) != count($idDiciplina))
+    {
+        echo "<script>alert('Existem disicplinas duplicadas! corrija isso antes de salvar!'); history.back(-1);</script>";
+        return false;
+
+    }
 
     if($query2->num_rows<=0)
     {
@@ -535,13 +543,156 @@ idAD = '$id[$i]' and idTurma = '$idTurma'";
     }else
     {
         echo "<script>alert('Ocorreu um erro ao atualizar'); history.back(-1);</script>";
-        return true;
+        return false;
     }
 
 
 
 }
 
+function verificaRequisito($idDisciplina, $idturma)
+{
+
+    $sql = "SELECT * FROM alunos_disciplinas WHERE idDiciplina = '$idDisciplina' and idTurma= '$idturma'";
+    $query = $GLOBALS['con']->query($sql);
+    $rsQuery = $query->fetch_array();
+
+    $requisito = $rsQuery['prerequisito'];
+
+    if($requisito == 0)
+    {
+
+        return true;
+
+    }
+
+    $sql = "SELECT * FROM alunos_disciplinas WHERE idDiciplina = '$requisito' and idTurma= '$idturma'";
+    $query = $GLOBALS['con']->query($sql);
+    $rsQuery = $query->fetch_array();
+
+    $situacao = $rsQuery['situacao'];
+
+
+    if($situacao == 1)
+    {
+        return "Esta disciplina está com um pre-requisito que não foi cursado";
+
+    }else if($situacao == 2)
+    {
+        return "Esta disciplina está com um pre-requisito que esta sendo cursado";
+
+    }else{
+
+        return true;
+
+    }
+
+
+
+
+
+}
+
+
+function gravarGrade($semestre, $idDisciplina, $idTurma, $periodo, $idCurso, $resp)
+{
+
+    $count = count($idDisciplina);
+
+    for($i=0; $i < $count ;$i++) {
+
+        if ($resp == true) {
+
+
+            $sql = "SELECT * FROM `alunos_disciplinas` WHERE idDiciplina = $idDisciplina[$i] and idTurma = '$idTurma' and semestre = '$semestre[$i]'";
+            $query = $GLOBALS['con']->query($sql);
+
+            if ($query->num_rows == 0) {
+                $desciplinas = buscaDisciplina($idDisciplina[$i]);
+                $carga = $desciplinas['cargaHoraria'];
+                $requisito = buscaRequisitos($idDisciplina[$i], $idCurso);
+
+
+                $sql = "INSERT INTO `alunos_disciplinas`(`idDiciplina`, `idTurma`, `cargaHoraria`, `prerequisito`, `situacao`, `PeriodoLetivo`, `semestre`) VALUES ('$idDisciplina[$i]','$idTurma',
+                '$carga','$requisito',1,'$periodo','$semestre[$i]')";
+                $query = $GLOBALS['con']->query($sql);
+
+            } else {
+                $sql = "update alunos_disciplinas set PeriodoLetivo = '$periodo' where  idDiciplina = '$idDisciplina[$i]' and idTurma = '$idTurma' and semestre = '$semestre[$i]' ";
+                $query = $GLOBALS['con']->query($sql);
+
+
+            }
+
+        }
+
+    }
+    if($query == true)
+    {
+        echo "<script>alert('Salvo com sucesso'); location.href='gradeTurma.php';</script>";
+        return true;
+    }else
+    {
+        echo "<script>alert('Ocorreu uma falha ao atualizar'); history.back(-1);</script>";
+        return true;
+    }
+
+
+}
+
+function buscaRequisitos($idDisciplina, $idCurso)
+{
+    $sql = "SELECT * FROM `modulo` where idDiciplina = '$idDisciplina' and idCurso = '$idCurso'";
+    $query = $GLOBALS['con']->query($sql);
+    $rsQuery = $query->fetch_array();
+
+    return $rsQuery['prerequisito'];
+
+
+}
+
+function buscaDisciplina($idDisciplina)
+{
+
+
+    $sql = "SELECT * FROM `diciplinas` where idDiciplina = '$idDisciplina'";
+    $query = $GLOBALS['con']->query($sql);
+    $rsQuery = $query->fetch_array();
+
+    $disciplinas = [
+
+        'Nome' => utf8_encode($rsQuery['Nome']),
+        'Sigla' => utf8_encode($rsQuery['sigla']),
+        'cargaHoraria' => utf8_encode($rsQuery['cargaHoraria']),
+        'descricao' => utf8_encode($rsQuery['descricao'])
+
+    ];
+
+    return $disciplinas;
+
+
+}
+
+function buscaTurma($idTurma)
+{
+
+
+    $sql = "SELECT * FROM `turma` where idTurma = '$idTurma'";
+    $query = $GLOBALS['con']->query($sql);
+    $rsQuery = $query->fetch_array();
+
+    $turmas = [
+
+        'Nome' => utf8_encode($rsQuery['Nome']),
+        'idCurso' => $rsQuery['idCurso'],
+        'status' => $rsQuery['status']
+
+    ];
+
+    return $turmas;
+
+
+}
 
 function historicoletivo($semestre, $numAlunos, $idCurso,$idTurma, $idLetivo)
 {

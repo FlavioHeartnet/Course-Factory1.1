@@ -135,7 +135,7 @@ include("topo.php");
                                         <div class="content">
                                             <div class="header move"><?php echo utf8_encode($rsDisc['Nome']); ?></div><br>
                                             <div class="meta">Ultimo periodo cursado: <?php echo $rsDisc2['Nome']; ?></div>
-                                            <input name="idAD[]" type="hidden" value="<?php echo $idAd ?>">
+                                            <input type="hidden" name="semestre[]" value="<?php echo $rsModulo['semestre']; ?>">
                                             <input type="hidden" name="idDiciplina[]" value="<?php echo $rsDisc['idDiciplina']; ?>">
                                             <div class="meta">Numero de Alunos: <?php echo $total; ?></div>
                                             <div class="meta"><strong>Modulo:  <?php echo $rsModulo['semestre']; ?></strong></div>
@@ -153,7 +153,7 @@ include("topo.php");
                         </ul>
                     </div>
                 </div>
-                <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
+
                 <div class="column">
 
                     <!--Campo que recebe as disciplinas arrasta e solta-->
@@ -174,6 +174,7 @@ include("topo.php");
 
 
                     ?>
+                    <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
                     <br><p class="cadastroLabel">Turma: <?php echo $rsTurma['Nome']; ?> <strong>Numero de alunos: <span class="turmas"><?php echo $historico['numAlunos']; ?></span></strong></p>
                     <div class="dragdrop-field">
                         <div class="dragdrop-box">
@@ -184,7 +185,9 @@ include("topo.php");
                                 $arrayTurma = array();
                                 $arrayTurma = $idTurma;
                                 ?>
-
+                                <input type="hidden" name="idTurma" value="<?php echo $idTurma; ?>">
+                                <input type="hidden" name="periodo" value="<?php echo $modulo; ?>">
+                                <input type="hidden" name="idCurso" value="<?php echo $idCurso; ?>">
                                 <?php
 
                                 $conect = "select * from alunos_disciplinas a inner join diciplinas d on d.idDiciplina = a.idDiciplina where a.PeriodoLetivo = '$modulo' and a.idTurma = '$idTurma'";
@@ -205,14 +208,14 @@ include("topo.php");
                                         $historico = $query2->fetch_array();
 
                                         ?>
-                                        <input type="hidden" name="idTurma[]" value="<?php echo $idTurma; ?>">
+
                                         <li class="element draggable" style="display:flex">
                                             <div class="ui cards ">
                                                 <div class="ui red card">
                                                     <div class="content">
                                                         <div class="header move"><?php echo utf8_encode($rsDisc['Nome']); ?></div><br>
-                                                        <input type="hidden" name="idAD[]" value="<?php echo $rsDisc['idAD']; ?>">
                                                         <input type="hidden" name="idDiciplina[]" value="<?php echo $rsDisc['idDiciplina']; ?>">
+                                                        <input type="hidden" name="semestre[]" value="<?php echo $rsDisc['semestre']; ?>">
                                                         <div class="meta">Ultimo periodo cursado:  <?php echo $rsDisc2['Nome']; ?></div>
                                                         <div class="meta">Numero de Alunos:  <?php echo $historico['numAlunos']; ?></div>
                                                         <div class="meta"><strong>Modulo:  <?php echo $rsDisc['semestre'] ?></strong></div>
@@ -231,16 +234,17 @@ include("topo.php");
                             </div>
                         </div>
                     </div>
+                        <div class="ui dragdrop-field">
+
+                            <input type="submit" name="salvar" value="salvar" class="ui positive button">
+
+                        </div>
+                    </form>
                     <?php } ?>
 
                 </div>
 
-                <div class="ui dragdrop-field">
 
-                    <input type="submit" name="salvar" value="salvar" class="ui positive button">
-
-                </div>
-                </form>
 
 
             </div>
@@ -257,40 +261,84 @@ $query = $con->query($sql);
 if(isset($_POST['salvar']))
 {
 
-    $idAD = $_POST['idAD'];
+    $semestre = $_POST['semestre'];
     $idDiciplina = $_POST['idDiciplina'];
     $idTurma = $_POST['idTurma'];
-    $count = count($idAD);
-
+    $periodo = $_POST['periodo'];
+    $idCurso = $_POST['idCurso'];
+    $count = count($idDiciplina);
 
     ?>
 <div class="ui centered page grid">
     <div class="row">
+        <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
     <table class="ui red table" cellspacing="0" cellpadding="0" border="0">
     <tr>
-        <td>id</td>
-        <td>disciplina</td>
+        <td>Modulo</td>
+        <td>Disciplina</td>
         <td>Turma</td>
+        <td>Situação</td>
     </tr>
 
     <?php
     for($i=0;$i< $count; $i++)
     {
 
+        $disciplina = buscaDisciplina($idDiciplina[$i]);
+        $turmas = buscaTurma($idTurma);
+        $resp = verificaRequisito($idDiciplina[$i], $idTurma);
+
         ?>
             <tr>
-                <td><?php echo $idAD[$i]; ?></td>
-                <td><?php echo $idDiciplina[$i]; ?></td>
-                <td><?php echo $idTurma[$i]; ?></td>
+                <td><?php echo $semestre[$i]; ?></td>
+                <td><?php echo $disciplina['Nome']; ?></td>
+                <td><?php echo $turmas['Nome']; ?></td>
+                <td><?php
+
+                    if($resp == true)
+                    {
+                        echo "Permitido";
+                    }else{
+
+                        echo "Não autorizado, motivo: ".$resp;
+
+                    }
+
+                    ?></td>
             </tr>
+            <input type="hidden" name="semestre[]" value="<?php echo $semestre[$i] ?>">
+        <input type="hidden" name="idCurso" value="<?php echo $idCurso ?>">
+        <input type="hidden" name="idTurma" value="<?php echo $idTurma ?>">
+        <input type="hidden" name="periodo" value="<?php echo $periodo ?>">
+        <input type="hidden" name="idDisciplina[]" value="<?php echo $idDiciplina[$i] ?>">
+        <input type="hidden" name="resp" value="<?php echo $resp ?>">
         <?php
     }
 
         ?>
     </table>
+
+            <input type="submit" name="grade" value="Finalizar" class="ui positive button">
+
+            </form>
     </div>
+
     </div>
         <?php
+
+}elseif(isset($_POST['grade']))
+{
+
+    $idDiciplina = $_POST['idDisciplina'];
+    $idTurma = $_POST['idTurma'];
+    $semestre = $_POST['semestre'];
+    $periodo = $_POST['periodo'];
+    $idCurso = $_POST['idCurso'];
+    $resp = $_POST['resp'];
+
+
+    gravarGrade($semestre, $idDiciplina, $idTurma, $periodo, $idCurso, $resp);
+
 
 }
 

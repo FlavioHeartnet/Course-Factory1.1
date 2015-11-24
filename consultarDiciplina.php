@@ -80,6 +80,29 @@ include("topo.php");
 
             while($RsQuery = $query->fetch_array()){
 
+                $idDiciplina =  $RsQuery['idDiciplina'];
+                $sql = "SELECT t.nome FROM diciplinas d inner join alunos_disciplinas a on a.idDiciplina = d.idDiciplina inner join turma t on t.idTurma = a.idTurma WHERE d.idDiciplina = '$idDiciplina'";
+
+                $query1 = $con->query($sql);
+                $turmas = "- ";
+                while($turmasRs = $query1->fetch_array()){
+
+
+                    $turmas .= $turmasRs['nome'].", ";
+
+                }
+
+                $sql="SELECT c.Nome FROM `modulo` m inner join cursos c on c.idCurso = m.idCurso WHERE m.idDiciplina = '$idDiciplina'";
+                $query1 = $con->query($sql);
+                $curso = "- ";
+                while($cursoRs = $query1->fetch_array()){
+
+
+                    $curso .= $cursoRs['Nome'].", ";
+
+                }
+
+
             ?>
                 <div class="ui  cards">
                     <div class="red cardsDisc card">
@@ -87,7 +110,9 @@ include("topo.php");
                             <div class="header"><?php echo utf8_encode($RsQuery['Nome']); ?></div>
                             <div class="meta">Carga horaria:<?php echo $RsQuery['cargaHoraria']; ?></div>
                             <div class="description">
-                                Duração: <p><?php echo $RsQuery['descricao']; ?></p>
+                                <strong>Observações:</strong> <p><?php echo utf8_encode($RsQuery['descricao']); ?></p>
+                                <strong>Turmas que foram ofertadas:</strong> <p><?php echo $turmas ?></p>
+                                <strong>Cursos que essa disciplina faz parte:</strong> <p><?php echo utf8_encode($curso) ?></p>
 
                                 <!--Colocar aqui o que for preenchido em "descrição" na página do casdastro-->
                             </div>

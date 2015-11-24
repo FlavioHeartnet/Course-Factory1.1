@@ -10,7 +10,7 @@ $idDisciplina = $_GET['valor3'];
 
 
 
-    $query2 = $GLOBALS['con']->query("select * from alunos_disciplinas where idTurma = '$idTurma' and idDiciplina = '$idDisciplina' and semestre= '$semestre'");
+    $query2 = $GLOBALS['con']->query("select * from alunos_disciplinas where idTurma = '$idTurma' and idDiciplina = '$idDisciplina'");
 
     if($query2->num_rows <= 0) {
 
