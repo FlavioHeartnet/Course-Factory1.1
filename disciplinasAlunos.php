@@ -63,52 +63,48 @@ if(isset($_POST['idTurma']))
 
 
                         ?>
+                        <input type="hidden" name="semestre[]" value="<?php echo $i  ?>">
                         <div class="ui left Modulos"><?php echo $i?>º Módulo </div>
+                        <div id="redips-drag">
                     <table class="ui red table">
                         <thead>
                         <tr>
+                            <th></th>
                             <th>Disciplina</th>
                             <th>Carga Horaria</th>
                             <th>Pré - Requisito</th>
                             <th>Situação</th>
                             <th>Periodo Letivo: </th>
-                            <th></th>
+
                         </tr>
                         </thead>
 
                     <?php
-                    $query=$con->query($sql);
+                    $query= buscas($sql);
                     $contador = 0 ;
-                    while($busca= $query->fetch_array()) {
+                    while($busca= gerarArray($query)) {
                     $semestre = $busca['semestre'];
 
                     if($semestre == $i){
 
-
-
+                        //Grade do aluno
                         ?>
                                 <tbody>
-                                <tr>
+                                <tr class="tr">
+                                    <td class="redips-rowhandler"><div class="redips-drag redips-row maximize icon"></div></td>
                                     <td>
                                         <label>
                                             <select onclick="buscaRequisitos(this.value, <?php echo $idCurso;?>,  <?php echo $contador; ?> )" class="ui dropdown" name="disciplina[]">
 
-                                                <option value="<?php echo $busca['idDiciplina'];  ?>"><?php echo $busca['Nome'];  ?></option>
-                                                <?php
+                                                <option value="<?php echo $busca['idDiciplina'];  ?>"><?php echo utf8_encode($busca['Nome']);  ?></option>
 
-                                                $query2 = $con->query("select * from modulo m inner join diciplinas d on m.idDiciplina = d.idDiciplina where idCurso = '$idCurso'");
-                                                while($diciplinas= $query2->fetch_array()) { ?>
-
-                                                    <option value="<?php echo $diciplinas['idDiciplina'];  ?>"><?php echo utf8_encode($diciplinas['Nome']);  ?></option>
-
-                                                <?php } ?>
 
 
                                             </select>
                                         </label>
                                         <input type="hidden" name="idCurso" value="<?php echo $idCurso  ?>">
                                         <input type="hidden" name="idTurma" value="<?php echo $idTurma;  ?>">
-                                        <input type="hidden" name="semestre[]" value="<?php echo $i  ?>">
+
                                         <input type="hidden" name="id[]" value="<?php if(isset($busca['idAD'] )){ echo $busca['idAD']; }else{ echo $busca['idModulo'];  }  ?>">
                                     </td>
                                     <td><label>
@@ -123,14 +119,14 @@ if(isset($_POST['idTurma']))
 
 
 
-                                            $requisito1= $con->query("select * from modulo where idDiciplina = '$valor' and idCurso = '$idCurso'");
+                                            $requisito1= buscas("select * from modulo where idDiciplina = '$valor' and idCurso = '$idCurso'");
 
 
-                                            while($rs = $requisito1->fetch_array())
+                                            while($rs = gerarArray($requisito1))
                                             {
                                                 $requisito = $rs['prerequisito'];
-                                                $query2 = $con->query("select * from diciplinas where idDiciplina = '$requisito'");
-                                                $rsQuery = $query2->fetch_array();
+                                                $query2 = buscas("select * from diciplinas where idDiciplina = '$requisito'");
+                                                $rsQuery = gerarArray($query2);
 
                                                 if($rs['prerequisito'] == 0 or $rs['prerequisito'] == "") {
                                                     ?>
@@ -150,9 +146,6 @@ if(isset($_POST['idTurma']))
 
                                             }
 
-
-
-
                                             ?>
 
 
@@ -161,9 +154,9 @@ if(isset($_POST['idTurma']))
                                             <select class="ui dropdown" name="Situacao[]">
                                                 <?php
                                                 $valor = $busca['idDiciplina'];
-                                                $ativo = $con->query("select * from alunos_disciplinas where idDiciplina ='$valor' and idTurma = '$idTurma'");
+                                                $ativo = buscas("select * from alunos_disciplinas where idDiciplina ='$valor' and idTurma = '$idTurma'");
 
-                                                while($quey3 = $ativo->fetch_array()) {
+                                                while($quey3 = gerarArray($ativo)) {
                                                     $ativos = $quey3['situacao'];
 
                                                     switch($ativos)
@@ -202,12 +195,12 @@ if(isset($_POST['idTurma']))
                                                 <?php
 
                                                 $valor = $busca['idDiciplina'];
-                                                $letivo = $con->query("select * from alunos_disciplinas where idDiciplina ='$valor' and idTurma = '$idTurma'");
-                                                $letivo2 = $letivo->fetch_array();
+                                                $letivo = buscas("select * from alunos_disciplinas where idDiciplina ='$valor' and idTurma = '$idTurma'");
+                                                $letivo2 = gerarArray($letivo);
                                                 $idLe = $letivo2['PeriodoLetivo'];
-                                                $sql2 = $con->query("select * from periodoletivo where idLetivo = '$idLe'");
+                                                $sql2 = buscas("select * from periodoletivo where idLetivo = '$idLe'");
 
-                                                while($quey3 = $sql2->fetch_array()) {
+                                                while($quey3 = gerarArray($sql2)) {
                                                     ?>
 
                                                     <option
@@ -215,9 +208,9 @@ if(isset($_POST['idTurma']))
 
                                                 <?php
                                                 }
-                                                $sql2 = $con->query("select * from periodoletivo where 1");
+                                                $sql2 = buscas("select * from periodoletivo where 1");
 
-                                                while($quey3 = $sql2->fetch_array()){
+                                                while($quey3 = gerarArray($sql2)){
                                                     ?>
                                                     <option value="<?php echo $quey3['idLetivo']; ?>"><?php echo $quey3['Nome']; ?></option>
 
@@ -232,14 +225,17 @@ if(isset($_POST['idTurma']))
 
 
                                 </tbody>
-                        <?php }
+
+                        <?php //fim da grade
+
+                    }
                         $contador++;
                     }
                     ?>
 
 
                         <tr>
-                            <td colspan="1"><a href="#" onclick="EscolherDisc(<?php echo $idTurma ?>,<?php echo $i ?>,0,2)" class="ui green right icon button dist">Adicionar disciplina</a></td>
+                            <td colspan="2"><a href="#" onclick="EscolherDisc(<?php echo $idTurma ?>,<?php echo $i ?>,0,2)" class="ui green right icon button dist">Adicionar disciplina</a></td>
                         </tr>
 
 
@@ -272,8 +268,8 @@ if(isset($_POST['idTurma']))
 
                         <?php
 
-                        $sql3 = "SELECT * FROM historicoletivo h inner join periodoletivo p on h.idLetivo = p.idLetivo where h.idTurma = '$idTurma'";
-                       $turma = $con->query($sql3);
+
+                       $turma = buscas("SELECT * FROM historicoletivo h inner join periodoletivo p on h.idLetivo = p.idLetivo where h.idTurma = '$idTurma'");
 
                         if($turma == true) {
 
@@ -290,14 +286,14 @@ if(isset($_POST['idTurma']))
                                             <?php
                                             $x = $i+1;
 
-                                            $letivo = $con->query("select * from historicoletivo where semestre ='$x' and idTurma = '$idTurma'");
-                                            $letivo2 = $letivo->fetch_array();
+                                            $letivo = buscas("select * from historicoletivo where semestre ='$x' and idTurma = '$idTurma'");
+                                            $letivo2 = gerarArray($letivo);
                                             $idLe = $letivo2['idLetivo'];
-                                            $sql2 = $con->query("select * from periodoletivo where idLetivo = '$idLe'");
+                                            $sql2 = buscas("select * from periodoletivo where idLetivo = '$idLe'");
 
                                             if(!$sql2->num_rows <= 0) {
 
-                                                while ($quey3 = $sql2->fetch_array()) {
+                                                while ($quey3 = gerarArray($sql2)) {
                                                     ?>
 
                                                     <option
@@ -309,9 +305,9 @@ if(isset($_POST['idTurma']))
                                             }else{  ?> <option
                                                 value="0">Não selecionado</option>  <?php   }
 
-                                            $sql2 = $con->query("select * from periodoletivo where 1");
+                                            $sql2 = buscas("select * from periodoletivo where 1");
 
-                                            while($quey3 = $sql2->fetch_array()){
+                                            while($quey3 = gerarArray($sql2)){
                                                 ?>
                                                 <option value="<?php echo $quey3['idLetivo']; ?>"><?php echo $quey3['Nome']; ?></option>
 
@@ -339,7 +335,9 @@ if(isset($_POST['idTurma']))
 
 
                 </table>
+
             </form>
+        </div>
 
         </div>
 
@@ -362,7 +360,7 @@ if(isset($_POST['idTurma']))
     </div>
 
 </div>
-
+<div id="dialog" title="jQuery dialog">Escolha uma ação!</div>
 
 
 <?php
@@ -397,13 +395,11 @@ if(isset($_POST['salvar']))
 
 
 ?>
+
+<script type="text/javascript" src="js/redips-drag-source.js"></script>
+<script type="text/javascript" src="js/drag-scripts.js"></script>
+
 <script type="text/javascript">
-
-
-
-
-
-
 
 $('.dist').click(function(){
 

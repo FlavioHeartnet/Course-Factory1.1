@@ -7,7 +7,6 @@ include("topo.php");
 <link rel="stylesheet" href="css/drag.css">
 <body id="home">
 
-
 <div class="ui vertical feature segment"> <!-- configurando página verticalmente (pixelização vertical)-->
     <div class="ui centered page grid"> <!-- Uma vez que foi configurada a pixelização, configura a centralização-->
         <div class="titlePage">
@@ -130,7 +129,7 @@ include("topo.php");
 
                              ?>
                             <li class="element draggable" style="display:flex">
-                                <div class="ui cards ">
+                                <div class="ui cards">
                                     <div class="ui red card">
                                         <div class="content">
                                             <div class="header move"><?php echo utf8_encode($rsDisc['Nome']); ?></div><br>
@@ -295,9 +294,10 @@ if(isset($_POST['salvar']))
                 <td><?php echo $turmas['Nome']; ?></td>
                 <td><?php
 
-                    if($resp == true)
+                    if($resp == 'Permitido')
                     {
                         echo "Permitido";
+
                     }else{
 
                         echo "Não autorizado, motivo: ".$resp;

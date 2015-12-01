@@ -199,7 +199,7 @@ function deletaModulo($idCurso,$semestre)
 
 if($query == true)
 {
-    echo "<script>alert('Modulo deletado com sucesso'); location.href='index.php';</script>";
+    echo "<script>alert('Modulo deletado com sucesso'); location.href='home.php';</script>";
     return true;
 }else
 {
@@ -209,22 +209,63 @@ if($query == true)
 
 }
 
-function cadastraAluno($nome, $sobrenome, $idCurso, $RA, $cpf, $bolsa, $financiado, $dataMatricula)
+function deletaUsuario($idUsuario)
 {
 
-    $sql = "insert into aluno (nome,sobrenome,idCurso,RA,CPF,bolsa,Financiado,DataMatricula)
-VALUES('$nome', '$sobrenome','$idCurso','$RA', '$cpf', '$bolsa', '$financiado','$dataMatricula')";
-
+    $sql = "delete from usuariosfactory where idUsuario = '$idUsuario'";
 
     $query = $GLOBALS['con']->query($sql);
 
     if($query == true)
     {
-        echo "<script>alert('Aluno cadastrado com sucesso'); location.href='cadastroAluno.php';</script>";
+        echo "<script>alert('Deletado com sucesso'); location.href='consultar-usuario.php';</script>";
         return true;
     }else
     {
-        echo "<script>alert('Ocorreu um erro ao salvar o Aluno!'); history.back(-1);</script>";
+        echo "<script>alert('Ocorreu um erro ao deletar!'); history.back(-1);</script>";
+        return true;
+    }
+
+}
+
+function addUsuario($nome, $usuario, $senha, $email, $status, $nivel)
+{
+
+    $sql = "INSERT INTO `usuariosfactory`(`nome`, `usuario`, `senha`, `status`, `email`, `nivel`) VALUES ('$nome','$usuario','$senha','$status','$email','$nivel')";
+
+
+    $query = $GLOBALS['con']->query($sql);
+
+
+
+    if($query == true)
+    {
+        echo "<script>alert('Usuario cadastrado com sucesso'); location.href='cadastro-usuario.php';</script>";
+        return true;
+    }else
+    {
+        echo "<script>alert('Ocorreu um erro ao cadastrar usuario!'); history.back(-1);</script>";
+        return true;
+    }
+
+}
+function editarUsuario($idUsuario, $nome, $usuario, $senha, $email, $status, $nivel)
+{
+
+    $sql = "UPDATE `usuariosfactory` SET `nome`='$nome',`usuario`='$usuario',`senha`='$senha',`status`='$status',`email` ='$email',`nivel`='$nivel' WHERE idUsuario = '$idUsuario'";
+
+
+    $query = $GLOBALS['con']->query($sql);
+
+
+
+    if($query == true)
+    {
+        echo "<script>alert('Usuario Atualizado com Sucesso'); location.href='consultar-usuario.php';</script>";
+        return true;
+    }else
+    {
+        echo "<script>alert('Ocorreu um erro ao Atualizar!'); history.back(-1);</script>";
         return true;
     }
 
@@ -562,7 +603,7 @@ function verificaRequisito($idDisciplina, $idturma)
     if($requisito == 0)
     {
 
-        return true;
+        return 'Permitido';
 
     }
 
@@ -583,13 +624,9 @@ function verificaRequisito($idDisciplina, $idturma)
 
     }else{
 
-        return true;
+        return 'Permitido';
 
     }
-
-
-
-
 
 }
 
@@ -647,7 +684,6 @@ function buscaRequisitos($idDisciplina, $idCurso)
     $rsQuery = $query->fetch_array();
 
     return $rsQuery['prerequisito'];
-
 
 }
 
@@ -770,6 +806,25 @@ function gradeLetica($ad, $letivo)
     $sql = "update alunos_historico set PeriodoLertivo='$letivo' where idAD = '$ad'";
 
 
+
+}
+
+
+function buscas($sql)
+{
+
+
+    $query = $GLOBALS['con']->query($sql);
+
+    return $query;
+
+}
+
+function gerarArray($sql)
+{
+
+
+    return $sql->fetch_array();
 
 }
 

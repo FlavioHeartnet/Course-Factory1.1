@@ -2,7 +2,7 @@
 
 include("topo.php");
 
-
+if($nivel == 0){ echo "<script>alert('Você não tem permissão para acessar esta pagina!'); location.href='home.php'</script>"; }
 ?>
 
 <!DOCTYPE html>

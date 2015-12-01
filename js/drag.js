@@ -20,7 +20,9 @@ function dragging_elements() {
         });
         // remove element
         $('.dragdrop-field').on('click', '.close', function() {
-            $(this).closest('.element').fadeOut("slow");
+            $(this).closest('.element').fadeOut("slow").remove();
+
+
         });
     });
 }
