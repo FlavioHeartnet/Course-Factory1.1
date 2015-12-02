@@ -709,6 +709,40 @@ function buscaDisciplina($idDisciplina)
 
 }
 
+function buscaCurso($idCurso)
+{
+
+
+    $sql = "SELECT * FROM `cursos` where idCurso = '$idCurso'";
+    $query = buscas($sql);
+    $rsQuery = gerarArray($query);
+
+    $cursos = [
+
+        'Nome' => utf8_encode($rsQuery['Nome']),
+        'codMac' => utf8_encode($rsQuery['codMac']),
+        'dataAutoMac' => utf8_encode($rsQuery['dataAutoMac']),
+        'Cordenador' => utf8_encode($rsQuery['Cordenador']),
+        'Modulo' => $rsQuery['Modulo']
+
+    ];
+
+    return $cursos;
+
+
+}
+
+function all($table)
+{
+
+    $sql = "SELECT * FROM `$table`";
+    $query = buscas($sql);
+
+
+    return $query;
+
+}
+
 function buscaTurma($idTurma)
 {
 

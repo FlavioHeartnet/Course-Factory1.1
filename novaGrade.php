@@ -27,54 +27,92 @@ include("topo.php");
 
     <div class="ui center page grid">
     <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
-        <div class="ui fluid category search ">
-            <div class="ui icon input">
-                <input class="prompt" autocomplete="off" required="" name="curso" id="" type="text" placeholder="Proucurar curso">
 
-                <i class="search icon buscarM"></i>
+
+        <div class="ui center aligned basic segment">
+            <?php $cursos = all('cursos');
+
+            while($rs = gerarArray($cursos)){
+            ?>
+            <div class="ui left icon action input">
+                    <div class="ui toggle checkbox">
+                        <input id="check" type="checkbox" name="curso[]" value="<?php echo utf8_encode($rs['Nome']) ?>">
+                        <label for="check"><?php echo utf8_encode($rs['Nome']) ?></label>
+
+                    </div>
             </div>
-            <div class="results"></div>
-        </div>
-        <br>
-        <span>Selecione o modulo</span>
-        <div class="column">
-            <label>
-                <select required="" class="ui dropdown" name="modulo">
-                    <?php $sql2 = $con->query("select * from periodoletivo where 1");
-
-                    while($quey3 = $sql2->fetch_array()){
-                        ?>
-                        <option value="<?php echo $quey3['idLetivo']; ?>"><?php echo $quey3['Nome']; ?></option>
-
-                    <?php } ?>
-                </select>
-            </label>
-
-            <input type="submit" name="result" value="Selecionar" class="ui green right labeled icon button">
-
+            <?php } ?>
+            <div class="ui horizontal divider">Então </div>
+            <div class="ui teal labeled icon "><input type="submit" name="result" value="Pesquisar" class="ui button green"></div>
         </div>
     </form>
 
 
     <?php if(isset($_POST['result'])) {
 
-        $curso = utf8_decode($curso = $_POST['curso']);
-        $modulo = $_POST['modulo'];
+        $curso = $curso = $_POST['curso'];
+
+        $texto ="";
+        $count = count($curso);
+        if($count > 1) {
+
+            for ($i = 0; $i < count($curso); $i++) {
+                if($i == $count-1){
+
+                    $texto .= "'" . $curso[$i] . "'";
+
+                }else {
+
+                    $texto .= "'".$curso[$i]."' and";
+                }
+            }
+            $sql = "select * from cursos where Nome = ".$texto;
+            $query = buscas($sql);
+            $arrayId = array();
+            while($rs = gerarArray($query))
+            {
+
+                $arrayId = $rs['idCurso'];
+
+            }
 
 
-        $sql = "select * from cursos where Nome= '$curso'";
-        $query = $con->query($sql);
-        $rsCurso = $query->fetch_array();
-        $idCurso = $rsCurso['idCurso'];
-        $contador = 0;
+            $texto1 = "";
+            for ($i = 0; $i < count($arrayId); $i++) {
+                if($i == $count-1){
+
+                    $texto1 .= "'" . $arrayId[$i] . "'";
+
+                }else {
+
+                    $texto1 .= "'".$arrayId[$i]."' and";
+                }
+            }
+
+            $sql = "select * from modulo where idCurso = ". $texto1;
+
+            echo $sql;
+            $query = buscas($sql);
+
+        }else{
+
+            $texto = $curso[0];
+            $sql = "select * from cursos where Nome = '$texto'";
+
+            $query = buscas($sql);
+            $rsCurso = gerarArray($query);
+            $idCurso = $rsCurso['idCurso'];
+            $contador = 0;
+            $sql = "select * from modulo where idCurso= '$idCurso'";
+            $query = buscas($sql);
+
+        }
 
 
-        $sql = "select * from modulo where idCurso= '$idCurso'";
-        $query = $con->query($sql);
 
-    }
-    ?>
-    </div>
+?>
+
+
     <!-- drag container -->
 
 <div id="redips-drag">
@@ -87,20 +125,8 @@ include("topo.php");
         <tbody>
         <!-- clone 2 elements + last element -->
 
-        <tr> <td><div  class="redips-drag redips-clone ui button primary"><div class="">ALG</div>
-                    <div class="ui fluid popup top left transition hidden">
-                        <div class="ui four column divided center aligned grid">
-                            <div class="column">Algorimos</div>
-                            <div class="column">Ciencias da computação</div>
-                            <div class="column">40 horas </div>
+        <tr> <td><div  class="redips-drag redips-clone ui button primary">ALG</div></td> </tr>
 
-                        </div>
-                    </div></div></td> </tr>
-        <tr> <td><div  class="redips-drag redips-clone ui button primary">Mat</div></td></tr>
-        <tr><td><div  class="redips-drag redips-clone ui button primary">BD1</div></td></tr>
-        <tr> <td><div  class="redips-drag redips-clone ui button primary">BD2</div></td></tr>
-        <tr> <td><div  class="redips-drag redips-clone ui button primary">Alg2</div></td></tr>
-        <tr> <td><div  class="redips-drag redips-clone ui button primary">ENG</div></td></tr>
         <tr> <td class="redips-trash">Deletar</td>
 
         </tbody>
@@ -118,14 +144,18 @@ include("topo.php");
             <col width="100"/>
         </colgroup>
         <tbody>
-        <tr ><td>1Sem2015</td>
+        <tr>
+            <td>1Sem2015</td>
             <td>2Sem2015</td>
             <td>1Sem2016</td>
             <td>2Sem2016</td>
             <td>1Sem2017</td>
             <td>2Sem2017</td>
             <td>1Sem2018</td>
-            <td>2Sem2018</td></tr>
+            <td>2Sem2018</td>
+        </tr>
+
+
         <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
         <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
         <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -138,9 +168,15 @@ include("topo.php");
             </div>
 </div>
 <!-- jQuery dialog -->
-<div id="dialog" title="jQuery dialog">Escolha uma ação</div>
+<div id="dialog" title="Selecione uma ação">Escolha uma ação</div>
 <!-- instructions -->
         </div>
+
+        <?php
+    }
+    ?>
+    </div>
+
         </div>
 
 
